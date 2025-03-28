@@ -1,20 +1,12 @@
 # ParaBank Website Testing Portfolio with Playwright 💰
 
 ## Overview
-<<<<<<< HEAD
-This repository contains a comprehensive test automation framework for the ParaBank (https://parabank.parasoft.com/parabank/index.htm) demonstration website using Playwright. The framework includes end-to-end tests, API tests, and various testing approaches to ensure thorough coverage of the ParaBank web application.
-=======
 This repository contains a comprehensive test automation framework for the ParaBank (https://parabank.parasoft.com/parabank/index.htm) demonstration website using Playwright. The framework includes end-to-end tests and various testing approaches to ensure thorough coverage of the ParaBank web application.
->>>>>>> c06cf1814b8557940042f83ea459ecef3556a290
 
 ## Features
 - End-to-end testing using Playwright
 - Faker.js integration for dynamic test data generation
 - Parallel test execution
-<<<<<<< HEAD
-- API testing
-=======
->>>>>>> c06cf1814b8557940042f83ea459ecef3556a290
 - Visual testing capabilities
 - Cross-browser testing support (Chromium, Firefox, WebKit)
 - GitHub Actions CI/CD pipeline
