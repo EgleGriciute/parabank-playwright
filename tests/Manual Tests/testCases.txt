@@ -1,0 +1,136 @@
+# ParaBank Website Test Cases
+
+## 1. Page Loading Tests
+1.1 Test successful page loading within acceptable time
+1.2. Confirm the page loads with a proper HTTP status code (200 OK)
+1.3. Verify the page loads without any JavaScript errors in the console
+
+## 2. Top Panel Navigation Tests
+2.1. Verify clicking on the Square logo redirects user to /admin.htm
+2.2. Confirm the 'PARA BANK' logo redirects to the base URL
+
+## 3. Left Menu Navigation Tests
+3.1. Verify 'Solutions' option is set as default and redirects to the base URL
+3.2. Confirm 'About Us' option navigates to /about.htm and test that 'About Us' page contains a link to the Parasoft external URL
+3.3. Verify 'Services' option navigates to /services.htm
+3.4. Test that 'Products' option navigates to the external Parasoft products page
+3.5. Verify 'Locations' option navigates to the external Parasoft solutions page
+3.6. Confirm 'Admin Page' option navigates to /admin.htm
+
+## 4. Right Menu Navigation Tests
+4.1. Verify 'Home' button navigates to the base URL
+4.2. Test that 'About' button navigates to /about.htm
+4.3. Confirm 'Contact' button navigates to /contact.htm
+
+## 5. Registration Tests
+5.1. Verify 'Register' navigates to the /register.htm
+5.2. Verify successful registration process with a unique username
+5.3. Verify successful registration process with a unique username
+5.4. Confirm appropriate error handling when attempting to register with an existing username
+5.5. Verify validation messages appear for all empty fields on the registration form
+5.6. Test that validation messages disappear when fields are properly populated
+5.7. Test error message display when password and confirm password fields don't match
+
+## 6. Customer Login Tests
+6.1. Verify successful login with valid credentials
+6.2. Verify error message appears when attempting to login with empty username and password
+6.3. Test error handling when username is filled but password is empty
+6.4. Confirm error handling when password is filled but username is empty
+6.5. Test error message display when using invalid credentials
+
+## 7. Forgot Login Info Tests
+7.1. Verify page gets navigated to /lookup.htm after 'Find my login info' click 
+7.2. Verify successful retrieval of login information when correct customer details are provided
+7.3. Confirm error handling when form is only partially filled
+7.4. Test error handling when submitting invalid customer information
+
+## 8. Index Page Tests
+8.1. Verify ATM Services link navigates to the correct WSDL page
+8.2. Test that Online Services link navigates to the specified WADL page
+8.3. Confirm 'READ MORE' link navigates to the services page
+8.4. Verify the date display shows the current date correctly
+8.5. Test that 'Latest News' click would navigate to the appropriate news.htm page
+8.6. Test that 'RED MORE' below would navigate to the appropriate news.htm page
+
+## 9. Admin Page Tests
+9.1. Verify saving settings with default values shows success message
+9.2. Test database initialization button functionality
+9.3. Confirm database cleaning button functionality
+9.4. Test JMS Service Status as set to default: 'Stopped'
+9.5. Verify JMS service shutdown functionality and status change
+9.6. Test JMS service startup functionality and status change
+9.7. Confirm default Data Access Mode is set to JDBC
+9.8. Test all radio button selections for Data Access Mode
+9.9. Verify WSDL link navigation
+9.10. Test WADL link navigation
+9.11. Confirm OpenAPI link navigation
+9.12. Test LoadProcessor Service link navigation
+9.13. Verify validation for empty Application Settings fields
+9.14. Validate 'Init. Balance: $' and reject non-numeric values
+9.15. Check 'Loan Provider' to be set to 'Web Service' by default
+9.16. Ensure a select element of'Loan Provider' contains option values of: 'JMS', 'Web Service', 'Local'
+9.17. Verify 'Loan Processor' is set to 'Available Funds' by default
+9.18. Ensure a select element of'Loan Processor' contains option values of: 'Available Funds', 'Down Payment', 'Combined'
+9.19. Test Threshold value limits validation
+9.20. Verify Threshold value exceeded limit error message
+
+## 10. Contact Page Tests
+10.1. Confirm successful form submission with valid data
+10.2. Verify validation messages appear for all empty fields after clicking 'SEND TO CUSTOMER CARE'
+
+## 11. Open Account Tests (Logged-in User)
+11.1. Test to open a new 'CHECKING' account after 'OPEN NEW ACCOUNT' click and route to ${baseUrl}/activity.htm?id=${bankAccountNumber}
+11.2. Test to open a new 'SAVINGS' account after 'OPEN NEW ACCOUNT' click and route to ${baseUrl}/activity.htm?id=${bankAccountNumber}
+11.3. Verify render in 'Account Details' selected type as 'Account Type': 'CHECKING'
+11.4. Verify render in 'Account Details' selected type as 'Account Type': 'SAVINGS'
+11.5. Confirm filter by month according to initial account creation. As well, type should be set to 'Credit', as amount gets populated with $100.00 as per default"
+11.6. Ensure return 'No transactions found.' after filtered by 'Activity Period' set to 'All' and 'type' set to 'Debit' due to inital 'SAVINGS 'account creation"
+11.7. Test return 'No transactions found.' after filtered by 'Activity Period' set to 'All' and 'type' set to 'Debit' due to inital 'CHECKING 'account creation"
+11.8. Verify a correctly rendered 'Date' after account creation
+11.9. Test 'Funds Transfer Received' hyperlink and navigate to: ${baseUrl}transaction.htm?id=${transcationId}
+11.10. Confirm a newly opened 'SAVINGS' account value set to Credit(+) of $100.00"
+11.11. Confirm a newly opened 'CHECKING' account value set to Credit(+) of $100.00"
+
+## 12. Account Overview Tests
+12.1. Verify account overview page loads correctly for logged-in users
+12.2. Test that all user accounts are displayed with correct information
+
+## 13. Transfer Funds Tests
+13.1. Test transfer between different accounts and verify successful transfer
+13.2. Verify transfer functionality with none amount value provided
+13.3. Test error handling for non-numeric input values
+
+## 14. Bill Pay Tests
+14.1. Ensure successful navigation to /billpay.htm after 'Bill Pay' click"
+14.2. Verify successful bill payment with positive amount
+14.3. Verify validation messages for all empty fields on the bill pay form
+14.4. Validate fields 'Account #', 'Verify Account #', 'Amount: $' - only numeric values may pass
+
+## 15. Find Transactions Tests
+15.1. Ensure successful navigation to /findtrans.htm after 'Find Transactions' click
+15.2. Test transaction ID functionality
+15.3. Test search by date functionality
+15.4. Confirm search by date range functionality
+15.5. Test search by amount functionality
+
+## 16. Update Profile Tests
+16.1. Test successful navigation to /updateprofile.htm after click
+16.2. Verify initially stored end-user contact information details
+16.3. Test profile update with valid information
+16.4. Test validation for required fields on the profile update form
+
+## 17. Request Loan Tests
+17.1. Ensure successful navigation to ${baseUrl}/requestloan.htm after click
+17.2. Test new successful loan account creation
+17.3. Verify loan denial for insufficient funds displays appropriate message
+17.4. Test error handling for zero values in loan fields
+17.5. Confirm error handling for empty values in loan fields
+17.6. Verify loan approval with 'Loan Amount $' value is missing
+17.7. Test loan approval with positive amount with 'Down Payment: $' value is missing
+
+## 18. Footer Navigation Tests
+18.1. Verify all navigation links function correctly when user is not logged in
+18.2. Test all navigation links function correctly when user is logged in
+
+## 19. Copyright Tests
+19.1. Verify Parasoft external link functions correctly

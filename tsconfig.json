@@ -1,0 +1,24 @@
+{
+    "compilerOptions": {
+        "target": "ESNext", // Or your preferred ECMAScript version
+        "module": "commonjs", // Or "esnext" if you're using a module bundler
+        "moduleResolution": "node",
+        "esModuleInterop": true, // Required for proper CommonJS module imports
+        "forceConsistentCasingInFileNames": true,
+        "strict": true,
+        "skipLibCheck": true,
+        "baseUrl": "./",
+        "paths": {
+            "*": [
+                "*"
+            ]
+        },
+        "outDir": "dist" // Add an output directory
+    },
+    "include": [
+        "**/*.ts"
+    ], // Include all .ts files in the project
+    "exclude": [
+        "node_modules"
+    ]
+}

@@ -1,0 +1,20 @@
+{
+  "name": "playwright-parabank",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test:ui": "npx playwright test --ui",
+    "headless": "npx playwright test",
+    "codegen": "npx playwright codegen https://parabank.parasoft.com/parabank/index.htm",
+    "parallel:test": "npx playwright test tests/ParallelTests.test.ts"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "devDependencies": {
+    "@faker-js/faker": "^9.6.0",
+    "@playwright/test": "^1.51.1",
+    "@types/node": "^22.13.10"
+  }
+}
