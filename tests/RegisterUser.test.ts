@@ -5,22 +5,22 @@ import { faker } from '@faker-js/faker';
 test.describe("Register User", () => {
 
     test.beforeEach(async ({ page }) => {
-        await page.goto('parabank/register.htm');
+        await page.goto('https://parabank.parasoft.com/parabank/register.htm');
     });
 
     test("should navigate to register page after clicking 'Register'", async ({ page }) => {
         await page.goto('/');
         await page.click("#loginPanel > p > a[href='register.htm']");
-        expect(page.url()).toContain('/register.htm');
+        await expect(page.url()).toContain('/register.htm');
     });
 
     test("should return welcome messages after successful registration", async ({ page }) => {
 
         const userData = await registerEndUser(page);
 
-        expect.poll(() => page.locator("#leftPanel > .smallText").textContent()).toContain(
-            `Welcome ${userData.firstName} ${userData.lastName}`
-        );
+        await expect.poll(() => page.locator("#leftPanel > .smallText").textContent(), {
+            timeout: 10000 // Increase timeout to 10 seconds or more
+        }).toContain(`Welcome ${userData.firstName} ${userData.lastName}`);
     });
 
     test("should show register, even if all of the other fields belong to another user, except username field", async ({ page }) => {
@@ -68,15 +68,15 @@ test.describe("Register User", () => {
         // Submit form:
         await page.click("input[value='Register']");
 
-        expect(page.locator("#customer\\.username\\.errors")).toContainText("This username already exists.");
+        await expect(page.locator("#customer\\.username\\.errors")).toContainText("This username already exists.");
     });
 
     test("should return form validation error messages for all form fields after clicking on 'REGISTER' button", async ({ page }) => {
 
         await page.click("input[value='Register']");
 
-        expect(page.locator("span.error")).toHaveCount(10);
-        expect(page.locator("span.error")).toContainText([
+        await expect(page.locator("span.error")).toHaveCount(10);
+        await expect(page.locator("span.error")).toContainText([
             "First name is required.",
             "Last name is required.",
             "Address is required.",
@@ -112,13 +112,13 @@ test.describe("Register User", () => {
 
             // Trigger initial validation messages:
             await page.locator("input[value='Register']").click();
-            expect(page.locator(`text="${errorMessage}"`)).toBeVisible();
+            await expect(page.locator(`text="${errorMessage}"`)).toBeVisible();
 
             // Fill in text for each field and submit:
             await page.locator(locator).fill('test');
             await page.locator("input[value='Register']").click();
 
-            expect(page.locator(`text="${errorMessage}"`)).not.toBeVisible();
+            await expect(page.locator(`text="${errorMessage}"`)).not.toBeVisible();
         }
     });
 

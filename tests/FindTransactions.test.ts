@@ -20,8 +20,8 @@ test.describe("Find Transactions", () => {
 
         await page.goto(`${baseUrl}/overview.htm`);
         await page.locator("a[href='findtrans.htm']").click();
-        expect(page).toHaveURL(`${baseUrl}/findtrans.htm`);
-        expect(page.locator("#formContainer h1")).toContainText("Find Transactions");
+        await expect(page).toHaveURL(`${baseUrl}/findtrans.htm`);
+        await expect(page.locator("#formContainer h1")).toContainText("Find Transactions");
 
     });
 
@@ -49,7 +49,7 @@ test.describe("Find Transactions", () => {
         expect(page).toHaveURL(`${baseUrl}/activity.htm?id=${accountNumber}`);
         const accountIdLocator = page.locator("#accountId");
         await accountIdLocator.waitFor({ state: 'visible' });
-        expect(accountIdLocator).toContainText(accountNumber);
+        await expect(accountIdLocator).toContainText(accountNumber);
 
         const transactionTableCell = page.locator("#transactionTable > tbody > tr > td").nth(1);
         await transactionTableCell.waitFor({ state: 'visible' });
@@ -79,7 +79,7 @@ test.describe("Find Transactions", () => {
         // As it is a known bug, it does return 'An internal error has occurred and has been logged.':
         const errorContainer = page.locator("#errorContainer p.error");
         await errorContainer.waitFor({ state: 'visible' });
-        expect(errorContainer).toContainText("An internal error has occurred and has been logged.");
+        await expect(errorContainer).toContainText("An internal error has occurred and has been logged.");
     });
 
     test("should 'Find by Date' after 'FIND TRANSACTIONS' click", async ({ page }) => {
@@ -103,10 +103,10 @@ test.describe("Find Transactions", () => {
         await transactionLink.click();
 
         // Perform transaction URL check:
-        expect(page).toHaveURL(`${baseUrl}/activity.htm?id=${accountNumber}`);
+        await expect(page).toHaveURL(`${baseUrl}/activity.htm?id=${accountNumber}`);
         const accountIdLocator = page.locator("#accountId");
         await accountIdLocator.waitFor({ state: 'visible' });
-        expect(accountIdLocator).toContainText(accountNumber);
+        await expect(accountIdLocator).toContainText(accountNumber);
 
         const transactionTableCell = page.locator("#transactionTable > tbody > tr > td").nth(1);
         await transactionTableCell.waitFor({ state: 'visible' });
@@ -135,7 +135,7 @@ test.describe("Find Transactions", () => {
 
         const transactionBody = page.locator("#transactionBody");
         await transactionBody.waitFor({ state: 'visible' });
-        expect(transactionBody).toContainText(date);
+        await expect(transactionBody).toContainText(date);
     });
 
     test("should 'Find by Date Range' after 'FIND TRANSACTIONS' click", async ({ page }) => {
@@ -159,10 +159,10 @@ test.describe("Find Transactions", () => {
         await transactionLink.click();
 
         // Perform transaction URL check:
-        expect(page).toHaveURL(`${baseUrl}/activity.htm?id=${accountNumber}`);
+        await expect(page).toHaveURL(`${baseUrl}/activity.htm?id=${accountNumber}`);
         const accountIdLocator = page.locator("#accountId");
         await accountIdLocator.waitFor({ state: 'visible' });
-        expect(accountIdLocator).toContainText(accountNumber);
+        await expect(accountIdLocator).toContainText(accountNumber);
 
         const transactionTableCell = page.locator("#transactionTable > tbody > tr > td").nth(1);
         await transactionTableCell.waitFor({ state: 'visible' });
@@ -196,7 +196,7 @@ test.describe("Find Transactions", () => {
 
         const transactionBody = page.locator("#transactionBody");
         await transactionBody.waitFor({ state: 'visible' });
-        expect(transactionBody).toContainText(date);
+        await expect(transactionBody).toContainText(date);
     });
 
     test("should 'Find by Amount' after 'FIND TRANSACTIONS' click", async ({ page }) => {
@@ -220,10 +220,10 @@ test.describe("Find Transactions", () => {
         await transactionLink.click();
 
         // Perform transaction URL check:
-        expect(page).toHaveURL(`${baseUrl}/activity.htm?id=${accountNumber}`);
+        await expect(page).toHaveURL(`${baseUrl}/activity.htm?id=${accountNumber}`);
         const accountIdLocator = page.locator("#accountId");
         await accountIdLocator.waitFor({ state: 'visible' });
-        expect(accountIdLocator).toContainText(accountNumber);
+        await expect(accountIdLocator).toContainText(accountNumber);
 
         const transactionTableCell = page.locator("#transactionTable > tbody > tr > td").nth(1);
         await transactionTableCell.waitFor({ state: 'visible' });
@@ -254,7 +254,7 @@ test.describe("Find Transactions", () => {
 
         const transactionTable = page.locator("#transactionTable");
         await transactionTable.waitFor({ state: 'visible' });
-        expect(transactionTable).toContainText(modifiedAmount);
+        await expect(transactionTable).toContainText(modifiedAmount);
     });
 
 });

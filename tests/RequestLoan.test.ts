@@ -18,7 +18,7 @@ test.describe("Request Loan", () => {
         await page.goto('/');
         await page.click("a[href='requestloan.htm']");
 
-        expect(page.url()).toContain("/requestloan.htm");
+        await expect(page.url()).toContain("/requestloan.htm");
 
     });
 
@@ -31,23 +31,23 @@ test.describe("Request Loan", () => {
         await page.waitForTimeout(1000); // Wait for 1 second
 
         const url = await page.url();
-        expect(url).toContain("/activity.htm?id=");
+        await expect(url).toContain("/activity.htm?id=");
 
         // Get available balance text and handle potential null value
         const availableBalanceElement = page.locator("#accountDetails > table > tbody > tr td#availableBalance");
-        expect(availableBalanceElement).toBeVisible({ timeout: 5000 });
+        await expect(availableBalanceElement).toBeVisible({ timeout: 5000 });
 
         const availableBalanceText = await availableBalanceElement.textContent();
 
         // Validate that availableBalanceText is not null
-        expect(availableBalanceText).not.toBeNull();
+        await expect(availableBalanceText).not.toBeNull();
 
         // Now TypeScript knows availableBalanceText is not null
         const refactoredAvailableBalance = parseFloat(availableBalanceText!.replace(/[$,]/g, ""));
 
         // Ensure the balance is retrieved correctly:
-        expect(typeof refactoredAvailableBalance).toBe("number");
-        expect(refactoredAvailableBalance).toBeGreaterThan(0);
+        await expect(typeof refactoredAvailableBalance).toBe("number");
+        await expect(refactoredAvailableBalance).toBeGreaterThan(0);
 
         // Navigate to loan request page:
         await page.goto("parabank/requestloan.htm");
@@ -62,12 +62,12 @@ test.describe("Request Loan", () => {
         // Ensure downPaymentValue is correctly parsed:
         const parsedDownPayment = parseFloat(downPaymentValue);
 
-        expect(typeof parsedDownPayment).toBe("number");
-        expect(parsedDownPayment).toBeLessThanOrEqual(refactoredAvailableBalance);
+        await expect(typeof parsedDownPayment).toBe("number");
+        await expect(parsedDownPayment).toBeLessThanOrEqual(refactoredAvailableBalance);
 
         // Submit the loan application:
         await page.click("input[value='Apply Now']");
-        expect(page.locator("#loanRequestApproved")).toContainText("Congratulations, your loan has been approved.");
+        await expect(page.locator("#loanRequestApproved")).toContainText("Congratulations, your loan has been approved.");
     });
 
     test("should return 'You do not have sufficient funds for the given down payment.' if there is not enough balance", async ({ page }) => {
@@ -83,7 +83,7 @@ test.describe("Request Loan", () => {
 
         const url = await page.url();
 
-        expect(url).toContain("/activity.htm?id=");
+        await expect(url).toContain("/activity.htm?id=");
 
         const availableBalanceText = await page.locator("#accountDetails > table > tbody > tr td#availableBalance").textContent();
 
@@ -91,8 +91,8 @@ test.describe("Request Loan", () => {
             const refactoredAvailableBalance = parseFloat(availableBalanceText.replace(/[$,]/g, ""));
 
             // Ensure the balance is retrieved correctly:
-            expect(typeof refactoredAvailableBalance).toBe("number");
-            expect(refactoredAvailableBalance).toBeGreaterThan(0);
+            await expect(typeof refactoredAvailableBalance).toBe("number");
+            await expect(refactoredAvailableBalance).toBeGreaterThan(0);
 
             // Navigate to loan request page:
             await page.goto("parabank/requestloan.htm");
@@ -109,16 +109,16 @@ test.describe("Request Loan", () => {
             // Ensure downPaymentValue is correctly parsed:
             const parsedDownPayment = parseFloat(downPaymentValue);
 
-            expect(typeof parsedDownPayment).toBe("number");
+            await expect(typeof parsedDownPayment).toBe("number");
 
             // Verify the down payment is indeed greater than available balance:
-            expect(parsedDownPayment).toBeGreaterThan(refactoredAvailableBalance);
+            await expect(parsedDownPayment).toBeGreaterThan(refactoredAvailableBalance);
 
             // Submit the loan application:
             await page.click("input[value='Apply Now']");
 
-            expect(page.locator("#loanRequestDenied")).toContainText("You do not have sufficient funds for the given down payment.");
-            expect(page.locator("#loanStatus")).toHaveText("Denied");
+            await expect(page.locator("#loanRequestDenied")).toContainText("You do not have sufficient funds for the given down payment.");
+            await expect(page.locator("#loanStatus")).toHaveText("Denied");
         } else {
             throw new Error("Failed to retrieve available balance.");
         }
@@ -134,8 +134,8 @@ test.describe("Request Loan", () => {
         await page.click("input[value='Apply Now']");
 
         // Verify error messages:
-        expect(page.locator("#requestLoanError h1")).toContainText("Error!");
-        expect(page.locator("#requestLoanError p")).toContainText("An internal error has occurred and has been logged.");
+        await expect(page.locator("#requestLoanError h1")).toContainText("Error!");
+        await expect(page.locator("#requestLoanError p")).toContainText("An internal error has occurred and has been logged.");
 
     });
 
@@ -149,8 +149,8 @@ test.describe("Request Loan", () => {
         await page.click("input[value='Apply Now']");
 
         // Verify error messages:
-        expect(page.locator("#requestLoanError h1")).toContainText("Error!");
-        expect(page.locator("#requestLoanError p")).toContainText("An internal error has occurred and has been logged.");
+        await expect(page.locator("#requestLoanError h1")).toContainText("Error!");
+        await expect(page.locator("#requestLoanError p")).toContainText("An internal error has occurred and has been logged.");
 
     });
 
@@ -166,8 +166,8 @@ test.describe("Request Loan", () => {
         await page.click("input[value='Apply Now']");
 
         // Verify error messages:
-        expect(page.locator("#requestLoanError h1")).toContainText("Error!");
-        expect(page.locator("#requestLoanError p")).toContainText("An internal error has occurred and has been logged.");
+        await expect(page.locator("#requestLoanError h1")).toContainText("Error!");
+        await expect(page.locator("#requestLoanError p")).toContainText("An internal error has occurred and has been logged.");
 
     });
 
@@ -183,8 +183,8 @@ test.describe("Request Loan", () => {
         await page.click("input[value='Apply Now']");
 
         // Verify error messages:
-        expect(page.locator("#requestLoanError h1")).toContainText("Error!");
-        expect(page.locator("#requestLoanError p")).toContainText("An internal error has occurred and has been logged.");
+        await expect(page.locator("#requestLoanError h1")).toContainText("Error!");
+        await expect(page.locator("#requestLoanError p")).toContainText("An internal error has occurred and has been logged.");
 
     });
 

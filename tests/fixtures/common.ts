@@ -23,11 +23,10 @@ export async function loadHomePageSuccessfully(page: Page) {
     return { consoleErrors, response };
 }
 
-
 export async function registerEndUser(page: Page) {
     await page.goto("/parabank/register.htm");
 
-    // Generate user data
+    // Generate user data:
     const userData = {
         firstName: faker.person.firstName(),
         lastName: faker.person.lastName(),
@@ -37,19 +36,20 @@ export async function registerEndUser(page: Page) {
         zipCode: faker.location.zipCode(),
         phoneNumber: faker.phone.number({ style: 'international' }),
         ssn: faker.number.int(1000000000).toString(),
-        username: faker.internet.username(),
+        username: faker.internet.username() + Math.floor(Math.random()).toString(),
         password: faker.internet.password(),
     };
 
-    // Save session data
+    // Save session data:
     const sessionData = {
-        sessionId: 'abc123',
+        sessionId: (faker.number.bigInt({ max: 10000000000n })).toString(),
         userData
     };
+
     const filePath = path.join(__dirname, '../fixtures/sessionInfo.json');
     fs.writeFileSync(filePath, JSON.stringify(sessionData, null, 2));
 
-    // Fill registration form
+    // Fill registration form:
     await page.locator('#customer\\.firstName').fill(userData.firstName);
     await page.locator("#customer\\.lastName").fill(userData.lastName);
     await page.locator("#customer\\.address\\.street").fill(userData.address);
@@ -73,7 +73,15 @@ export async function registerEndUser(page: Page) {
 
 export async function logOut(page: Page) {
     await page.goto("parabank/overview.htm");
-    await page.click("a[href='logout.htm']");
+
+    // Wait for the logout link to be visible before clicking
+    const logoutLink = page.locator("a[href='logout.htm']");
+    await logoutLink.waitFor({ state: "visible", timeout: 10000 });
+
+    // Click on the logout link
+    await logoutLink.click();
+
+    // Ensure the user is redirected to the login page (or homepage)
     await expect(page).toHaveURL(/\/index\.htm/);
 }
 
@@ -99,26 +107,40 @@ export async function loginEndUser(page: Page) {
 
 export async function openNewAccount(page: Page, accountType: string) {
     await page.goto("/parabank/openaccount.htm");
+    await page.waitForLoadState("domcontentloaded");
 
-    // Load credentials from fixture
+    // Load credentials safely
     const sessionFilePath = path.resolve(__dirname, 'sessionInfo.json');
-    const fileContent = fs.readFileSync(sessionFilePath, 'utf-8').trim();
-    let sessionData;
-    sessionData = JSON.parse(fileContent);
+    if (!fs.existsSync(sessionFilePath)) {
+        throw new Error("sessionInfo.json file is missing.");
+    }
 
-    // Open account form validation
+    const fileContent = fs.readFileSync(sessionFilePath, 'utf-8').trim();
+    const sessionData = JSON.parse(fileContent);
+
+    // Validate form
     await expect(page.locator("#openAccountForm h1.title")).toContainText("Open New Account");
 
     // Select account type
     await page.selectOption("#type", accountType);
 
-    // Select the first available account
-    const firstOptionText = await page.locator("#fromAccountId option").first().textContent();
-    await page.selectOption("#fromAccountId", firstOptionText);
+    // Select the first available account safely
+    const firstOption = await page.locator("#fromAccountId option").first();
+    const firstOptionValue = await firstOption.getAttribute("value");
+
+    if (!firstOptionValue) {
+        throw new Error("No available accounts found to open a new account.");
+    }
+
+    await page.selectOption("#fromAccountId", firstOptionValue);
 
     // Click "Open New Account"
     await page.click("input[value='Open New Account']");
-    await page.click("a#newAccountId");
+
+    // Ensure the new account ID link is present and clickable
+    const newAccountLink = page.locator("a#newAccountId");
+    await newAccountLink.waitFor({ state: 'visible', timeout: 15000 });
+    await newAccountLink.click();
 }
 
 export function getTodaysDateMonth(): string {
@@ -164,9 +186,6 @@ export async function transferToAccount(page: Page) {
     expect(fromAccountId).not.toEqual(toAccountId);
 
     await page.locator("input[value='Transfer']").click();
-
-    // await expect(page.locator("text='Transfer Complete'")).toBeVisible();
-
     await page.goto("parabank/overview.htm");
 }
 

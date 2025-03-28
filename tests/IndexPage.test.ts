@@ -20,7 +20,7 @@ test.describe("Index Page", () => {
             const expectedUrl = `${baseUrl}/services/ParaBank?wsdl`;
 
             // Assert that the current page URL matches the expected URL:
-            expect(page.url()).toContain(expectedUrl);
+            await expect(page.url()).toContain(expectedUrl);
             await page.goto("/");
         }
     });
@@ -37,7 +37,7 @@ test.describe("Index Page", () => {
             const expectedUrl = `${baseUrl}/services/bank?_wadl&_type=xml`;
 
             // Assert that the current page URL matches the expected URL:
-            expect(page.url()).toContain(expectedUrl);
+            await expect(page.url()).toContain(expectedUrl);
             await page.goto("/");
         }
     });
@@ -45,46 +45,42 @@ test.describe("Index Page", () => {
     test("should navigate to ${baseUrl}/services.htm after 'READ MORE' click", async ({ page }) => {
 
         await page.locator("p.more a[href='services.htm']").click();
-        expect(page.url()).toContain("services.htm");
+        await expect(page.url()).toContain("services.htm");
 
     })
 
     test("should show the correct caption date", async ({ page }) => {
 
         const testing = getTodaysDateSlashFormat();
-        expect(page.locator("ul.events li.captionthree")).toContainText(testing);
+        await expect(page.locator("ul.events li.captionthree")).toContainText(testing);
 
     });
 
 
     test("should navigate to ${baseUrl}/news.htm#${number} after clicking on 'Latest News' list items", async ({ page }) => {
-
         const newsListItems = [
-
             { title: "ParaBank Is Now Re-Opened", id: 6 },
             { title: "New! Online Bill Pay", id: 5 },
             { title: "New! Online Account Transfers", id: 4 }
-
         ];
 
+        const baseUrl = 'https://parabank.parasoft.com/parabank';
+
         for (const { title, id } of newsListItems) {
-
-            const baseUrl = 'https://parabank.parasoft.com/parabank';
-            await page.goto(baseUrl);
-
             const expectedUrl = `${baseUrl}/news.htm#${id}`;
 
-            // First find the element that contains the text, then click it:
+            await page.goto(baseUrl);
             await page.locator("ul.events").getByText(title).click();
+            await page.waitForURL(expectedUrl);
 
-            // Verify the URL:
-            expect(page).toHaveURL(expectedUrl);
+            await expect(page.url()).toBe(expectedUrl);
         }
     });
 
+
     test("should launch ${baseUrl}/news.htm after 'RED MORE' click", async ({ page }) => {
         await page.locator("p.more a[href='news.htm']").click();
-        expect(page.url()).toContain("news.htm");
+        await expect(page.url()).toContain("news.htm");
     });
 
 });

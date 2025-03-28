@@ -13,7 +13,7 @@ test.describe("Top Panel Navigation", () => {
         await adminLogo.waitFor({ state: "visible", timeout: 3000 });
         await adminLogo.click();
 
-        expect(page).toHaveURL(/\/parabank\/admin\.htm$/);
+        await expect(page).toHaveURL(/\/parabank\/admin\.htm$/);
     });
 
     test("should navigate to baseUrl after 'PARA BANK' logo click", async ({ page }) => {
@@ -22,6 +22,6 @@ test.describe("Top Panel Navigation", () => {
         await paraBankLogo.waitFor({ state: "visible", timeout: 3000 });
         await paraBankLogo.click();
 
-        expect(page).toHaveURL(/\/parabank\/index\.htm$/);
+        await expect(page).toHaveURL(/\/parabank\/index\.htm$/);
     });
 });

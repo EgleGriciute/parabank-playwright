@@ -35,7 +35,7 @@ test.describe("Transfer Funds Page", () => {
         await page.locator("input[value='Transfer']").click();
 
         // Verify transfer complete message:
-        expect(page.locator("h1:has-text('Transfer Complete')")).toBeVisible();
+        await expect(page.locator("h1:has-text('Transfer Complete')")).toBeVisible();
 
     });
 
@@ -60,9 +60,9 @@ test.describe("Transfer Funds Page", () => {
         await page.locator("input[value='Transfer']").click();
 
         // Verify error message:
-        expect(page.locator("div#showError")).toBeVisible();
-        expect(page.locator("div#showError > h1.title")).toContainText("Error!");
-        expect(page.locator("div#showError > p.error")).toContainText("An internal error has occurred and has been logged.");
+        await expect(page.locator("div#showError")).toBeVisible();
+        await expect(page.locator("div#showError > h1.title")).toContainText("Error!");
+        await expect(page.locator("div#showError > p.error")).toContainText("An internal error has occurred and has been logged.");
 
     });
 
@@ -87,9 +87,9 @@ test.describe("Transfer Funds Page", () => {
         await page.locator("input[value='Transfer']").click();
 
         // Verify error message:
-        expect(page.locator("div#showError")).toBeVisible();
-        expect(page.locator("div#showError > h1.title")).toContainText("Error!");
-        expect(page.locator("div#showError > p.error")).toContainText("An internal error has occurred and has been logged.");
+        await expect(page.locator("div#showError")).toBeVisible();
+        await expect(page.locator("div#showError > h1.title")).toContainText("Error!");
+        await expect(page.locator("div#showError > p.error")).toContainText("An internal error has occurred and has been logged.");
 
     });
 

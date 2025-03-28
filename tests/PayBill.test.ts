@@ -22,9 +22,9 @@ test.describe("Pay Bill", () => {
         await page.goto(`${baseUrl}/overview.htm`);
 
         await page.locator("a[href='billpay.htm']").click();
-        expect(page).toHaveURL(`${baseUrl}/billpay.htm`);
+        await expect(page).toHaveURL(`${baseUrl}/billpay.htm`);
 
-        expect(page.locator("div#billpayForm h1")).toContainText("Bill Payment Service");
+        await expect(page.locator("div#billpayForm h1")).toContainText("Bill Payment Service");
 
     });
 
@@ -48,7 +48,7 @@ test.describe("Pay Bill", () => {
         }
 
         await page.locator("input[value='Send Payment']").click();
-        expect(page.locator("#billpayResult h1")).toContainText("Bill Payment Complete");
+        await expect(page.locator("#billpayResult h1")).toContainText("Bill Payment Complete");
     });
 
     test("should validate each form table field after 'SEND PAYMENT' click", async ({ page }) => {
@@ -68,7 +68,7 @@ test.describe("Pay Bill", () => {
 
         for (const error of payeeInformationValidationErrors) {
             await page.locator(`span#validationModel-${error.selector}`).waitFor({ state: 'visible' });
-            expect(page.locator(`span#validationModel-${error.selector}`)).toContainText(error.message);
+            await expect(page.locator(`span#validationModel-${error.selector}`)).toContainText(error.message);
         }
     });
 
@@ -105,13 +105,13 @@ test.describe("Pay Bill", () => {
             await page.locator("input[value='Send Payment']").click();
 
             await page.locator("span#validationModel-account-invalid").waitFor({ state: 'visible' });
-            expect(page.locator("span#validationModel-account-invalid")).toContainText("Please enter a valid number.");
+            await expect(page.locator("span#validationModel-account-invalid")).toContainText("Please enter a valid number.");
 
             await page.locator("span#validationModel-verifyAccount-invalid").waitFor({ state: 'visible' });
-            expect(page.locator("span#validationModel-verifyAccount-invalid")).toContainText("Please enter a valid number.");
+            await expect(page.locator("span#validationModel-verifyAccount-invalid")).toContainText("Please enter a valid number.");
 
             await page.locator("span#validationModel-amount-invalid").waitFor({ state: 'visible' });
-            expect(page.locator("span#validationModel-amount-invalid")).toContainText("Please enter a valid amount.");
+            await expect(page.locator("span#validationModel-amount-invalid")).toContainText("Please enter a valid amount.");
         }
     });
 

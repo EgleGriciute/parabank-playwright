@@ -10,37 +10,33 @@ test.describe("Customer Login", () => {
 
     test("should login with correct credentials: username and password", async ({ page }) => {
         await loginEndUser(page);
-    })
+    });
 
     test("should return 'Error! Please enter a username and password.' after leaving input fields empty", async ({ page }) => {
-
-        // Click the 'Log In' button without filling in the fields:
         await page.locator("input[value='Log In']").click();
 
-        // Expect the error message to be visible:
-        expect(page.locator("text=Error! Please enter a username and password.")).toBeVisible();
+        // Debug: Check if the error message exists
+        const errorMessages = await page.locator("text=Error! Please enter a username and password.").count();
+        console.log("Error message count:", errorMessages);
+
+        // Fixed: Use getByText and ensure visibility
+        await expect(page.getByText(/Please enter a username and password/i)).toBeVisible();
     });
 
     test("should return 'Error! Please enter a username and password.' if username is filled but password is empty", async ({ page }) => {
-
         await page.locator("input[name='username']").fill("test");
         await page.locator("input[value='Log In']").click();
 
-        // Expect the error message to be visible:
-        expect(page.locator("text=Please enter a username and password.")).toBeVisible();
-
+        // Fixed: Wait for message and match text case-insensitively
+        await expect(page.getByText(/Please enter a username and password/i)).toBeVisible();
     });
 
     test("should return 'Error! Please enter a username and password.' if password is filled but username is empty", async ({ page }) => {
-
         await page.locator("input[name='password']").fill("test");
         await page.locator("input[value='Log In']").click();
 
-        // Expect the error message to be visible:
-        expect(page.locator("text=Please enter a username and password.")).toBeVisible();
-
-    })
+        // Fixed: More reliable error message check
+        await expect(page.getByText(/Please enter a username and password/i)).toBeVisible();
+    });
 
 });
-
-

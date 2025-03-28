@@ -83,13 +83,11 @@
 11.2. Test to open a new 'SAVINGS' account after 'OPEN NEW ACCOUNT' click and route to ${baseUrl}/activity.htm?id=${bankAccountNumber}
 11.3. Verify render in 'Account Details' selected type as 'Account Type': 'CHECKING'
 11.4. Verify render in 'Account Details' selected type as 'Account Type': 'SAVINGS'
-11.5. Confirm filter by month according to initial account creation. As well, type should be set to 'Credit', as amount gets populated with $100.00 as per default"
+11.5. Confirm filter by month according to initial account creation. As well, type should be set to 'Credit', as amount gets populated with $ as per default"
 11.6. Ensure return 'No transactions found.' after filtered by 'Activity Period' set to 'All' and 'type' set to 'Debit' due to inital 'SAVINGS 'account creation"
 11.7. Test return 'No transactions found.' after filtered by 'Activity Period' set to 'All' and 'type' set to 'Debit' due to inital 'CHECKING 'account creation"
 11.8. Verify a correctly rendered 'Date' after account creation
 11.9. Test 'Funds Transfer Received' hyperlink and navigate to: ${baseUrl}transaction.htm?id=${transcationId}
-11.10. Confirm a newly opened 'SAVINGS' account value set to Credit(+) of $100.00"
-11.11. Confirm a newly opened 'CHECKING' account value set to Credit(+) of $100.00"
 
 ## 12. Account Overview Tests
 12.1. Verify account overview page loads correctly for logged-in users

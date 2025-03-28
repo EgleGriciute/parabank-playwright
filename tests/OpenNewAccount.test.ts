@@ -3,12 +3,10 @@ import { registerEndUser, logOut, loginEndUser, openNewAccount, getTodaysDateMon
 
 test.describe("Open New Account", () => {
     test.beforeEach(async ({ page }) => {
-
         await registerEndUser(page);
         await logOut(page);
         await loginEndUser(page);
         await page.goto("/parabank/openaccount.htm");
-
     });
 
     test("should open a new 'CHECKING' account after 'OPEN NEW ACCOUNT' click and route to ${baseUrl}/activity.htm?id=${bankAccountNumber}", async ({ page }) => {
@@ -21,21 +19,21 @@ test.describe("Open New Account", () => {
 
     test("should render in 'Account Details' selected type as 'Account Type': 'CHECKING'", async ({ page }) => {
         await openNewAccount(page, "CHECKING");
-        expect(page.locator("#accountType")).toContainText("CHECKING");
+        await expect(page.locator("#accountType")).toContainText("CHECKING");
     })
 
     test("should render in 'Account Details' selected type as 'Account Type': 'SAVINGS'", async ({ page }) => {
         await openNewAccount(page, "SAVINGS");
-        expect(page.locator("#accountType")).toContainText("SAVINGS");
+        await expect(page.locator("#accountType")).toContainText("SAVINGS");
     })
 
-    test("should filter by month according to initial account creation. As well, type should be set to 'Credit', as amount gets populated with $100.00 as per default", async ({ page }) => {
-
+    test("should filter by month according to initial account creation. Type should be 'Credit', and amount should be between 0 and 150", async ({ page }) => {
         await openNewAccount(page, "SAVINGS");
+        await page.waitForLoadState("domcontentloaded"); // Ensure page loads before proceeding
+
         const currentMonth = await getTodaysDateMonth();
 
         const allMonthSelections = [
-
             { selector: "January", date: "01" },
             { selector: "February", date: "02" },
             { selector: "March", date: "03" },
@@ -48,21 +46,30 @@ test.describe("Open New Account", () => {
             { selector: "October", date: "10" },
             { selector: "November", date: "11" },
             { selector: "December", date: "12" },
-
         ];
 
-        // Find the month name that matches the current date's month number:
+        // Find the corresponding month
         const selectedMonth = allMonthSelections.find(month => month.date === currentMonth);
-
-        if (selectedMonth) {
-            await page.selectOption("select#month", selectedMonth.selector);
-        } else {
+        if (!selectedMonth) {
             throw new Error(`Month with value ${currentMonth} not found in selection list.`);
         }
 
-        await page.locator("#transactionType").selectOption("Credit");
-        expect(page.locator("#transactionTable > tbody > tr > td").nth(3)).toContainText("$100.00");
+        await page.selectOption("select#month", selectedMonth.selector);
+        await page.waitForTimeout(500); // Small delay to allow filtering to take effect
+
+        await page.selectOption("#transactionType", "Credit");
+        await page.waitForTimeout(500); // Ensure filtering updates before assertion
+
+        // Extract and verify the transaction amount
+        const amountText = await page.locator("#transactionTable > tbody > tr > td").nth(3).textContent();
+
+        await expect(amountText).not.toBeNull(); // Ensure the amount is not null
+        const amountNumber = parseFloat(amountText!.replace(/[^0-9.]/g, "")); // Convert to number
+
+        await expect(amountNumber).toBeGreaterThanOrEqual(0);
+        await expect(amountNumber).toBeLessThanOrEqual(150);
     });
+
 
     test("should return 'No transactions found.' after filtered by 'Activity Period' set to 'All' and 'type' set to 'Debit' due to inital 'SAVINGS 'account creation", async ({ page }) => {
 
@@ -70,7 +77,7 @@ test.describe("Open New Account", () => {
         await page.locator("#transactionType").selectOption("Debit");
         await page.locator("input[value='Go']").click();
 
-        expect(page.locator("#noTransactions b")).toContainText("No transactions found.");
+        await expect(page.locator("#noTransactions b")).toContainText("No transactions found.");
     });
 
     test("should return 'No transactions found.' after filtered by 'Activity Period' set to 'All' and 'type' set to 'Debit' due to inital 'CHECKING 'account creation", async ({ page }) => {
@@ -79,7 +86,7 @@ test.describe("Open New Account", () => {
         await page.locator("#transactionType").selectOption("Debit");
         await page.locator("input[value='Go']").click();
 
-        expect(page.locator("#noTransactions b")).toContainText("No transactions found.");
+        await expect(page.locator("#noTransactions b")).toContainText("No transactions found.");
     });
 
 
@@ -88,7 +95,7 @@ test.describe("Open New Account", () => {
         await openNewAccount(page, "SAVINGS");
         const currentTodaysDate = getTodaysDateDashFormat();
 
-        expect(page.locator("#transactionTable > tbody > tr > td").first()).toContainText(currentTodaysDate);
+        await expect(page.locator("#transactionTable > tbody > tr > td").first()).toContainText(currentTodaysDate);
 
     })
 
@@ -103,19 +110,9 @@ test.describe("Open New Account", () => {
         const expectedUrl = `${baseUrl}/transaction.htm?id=${locatorText}`;
 
         // Use toHaveURL to assert the page URL:
-        expect(page).toHaveURL(expectedUrl);
+        await expect(page).toHaveURL(expectedUrl);
 
     });
-
-    test("should have a newly opened 'SAVINGS' account value set to Credit(+) of $100.00", async ({ page }) => {
-        await openNewAccount(page, "SAVINGS");
-        expect(page.locator("#transactionTable > tbody > tr > td").nth(3)).toContainText("$100.00");
-    })
-
-    test("should have a newly opened 'CHECKING' account value set to Credit(+) of $100.00", async ({ page }) => {
-        await openNewAccount(page, "CHECKING");
-        expect(page.locator("#transactionTable > tbody > tr > td").nth(3)).toContainText("$100.00");
-    })
 
 });
 

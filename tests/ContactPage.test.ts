@@ -15,7 +15,7 @@ test.describe("Contact Page", () => {
         for (const customerCareError of customerCareErrors) {
 
             const errorLocator = page.locator(`#${customerCareError}`);
-            expect(errorLocator).toBeVisible();
+            await expect(errorLocator).toBeVisible();
 
         }
 
@@ -26,7 +26,7 @@ test.describe("Contact Page", () => {
 
         await page.locator("input[value='Send to Customer Care']").click();
 
-        expect(page.locator("#rightPanel p").nth(1)).toContainText("A Customer Care Representative will be contacting you.");
+        await expect(page.locator("#rightPanel p").nth(1)).toContainText("A Customer Care Representative will be contacting you.");
 
     })
 
@@ -45,7 +45,7 @@ test.describe("Contact Page", () => {
         for (const customerCareError of customerCareErrors) {
 
             const errorLocator = page.locator(`span#${customerCareError.selector}\\.errors`);
-            expect(errorLocator).toBeVisible();
+            await expect(errorLocator).toBeVisible();
 
         }
 

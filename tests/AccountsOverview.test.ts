@@ -12,21 +12,27 @@ test.describe("Accounts Overview", () => {
     });
 
     test("should launch 'Accounts Overview' after login and left menu click and render: 'Account', 'Balance', 'Available Amount' values", async ({ page }) => {
+        await page.goto("/parabank/openaccount.htm");
 
-        await page.goto("/");
+        // Wait for the link to be visible:
+        await page.locator("a[href='overview.htm']").waitFor({ state: 'visible', timeout: 60000 });
 
+        // Click the 'Overview' link:
         await page.locator("a[href='overview.htm']").click();
-        expect(page.url()).toContain("overview.htm");
 
+        // Wait for the URL to contain 'overview.htm':
+        await expect(page.url()).toContain("overview.htm");
+
+        // Get account number and validate the activity link visibility:
         const accountNumber = await page.locator("table#accountTable tbody>tr>td").first().textContent();
-        expect(page.locator(`a[href='activity.htm?id=${accountNumber}']`)).toBeVisible();
+        await expect(page.locator(`a[href='activity.htm?id=${accountNumber}']`)).toBeVisible();
 
+        // Check that 'Account Balance' and 'Available Amount' are visible:
         const accountBalance = page.locator("table#accountTable tbody>tr>td").nth(2);
         const availableAmount = page.locator("table#accountTable tbody>tr>td").nth(3);
 
-        expect(accountBalance).toBeVisible();
-        expect(availableAmount).toBeVisible();
-
+        await expect(accountBalance).toBeVisible();
+        await expect(availableAmount).toBeVisible();
     });
 
 });

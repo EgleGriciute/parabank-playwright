@@ -26,9 +26,9 @@ test.describe("User Is Logged In - Footer Section", () => {
         for (const item of pageNavigation) {
 
             const link = page.locator(`div#footerPanel > ul > li`).nth(item.listIndex).locator("a");
-            expect(link).toContainText(item.urlText);
+            await expect(link).toContainText(item.urlText);
             await link.click();
-            expect(page.url()).toBe(`${baseURL}/${item.url}`);
+            await expect(page.url()).toBe(`${baseURL}/${item.url}`);
 
         }
     })
@@ -36,8 +36,8 @@ test.describe("User Is Logged In - Footer Section", () => {
     test("should navigate 'Products' to https://www.parasoft.com/products/", async ({ page }) => {
 
         const link = page.locator("div#footerPanel > ul > li").nth(3).locator("a");
-        expect(link).toContainText("Products");
-        expect(link).toBeVisible();
+        await expect(link).toContainText("Products");
+        await expect(link).toBeVisible();
         const targetUrl = await link.getAttribute("href");
 
         if (targetUrl === null) {
@@ -45,44 +45,44 @@ test.describe("User Is Logged In - Footer Section", () => {
         }
 
         await page.goto(targetUrl);
-        expect(page.url()).toBe("https://www.parasoft.com/products/");
+        await expect(page.url()).toBe("https://www.parasoft.com/products/");
     })
 
     test("should navigate 'Locations' to 'https://www.parasoft.com/solutions/'", async ({ page }) => {
 
         const link = page.locator("div#footerPanel > ul > li").nth(4).locator("a");
-        expect(link).toContainText("Locations");
-        expect(link).toBeVisible();
+        await expect(link).toContainText("Locations");
+        await expect(link).toBeVisible();
         const targetUrl = await link.getAttribute("href");
         if (targetUrl === null) {
             throw new Error("Failed to retrieve target URL.");
         }
         await page.goto(targetUrl);
-        expect(page.url()).toBe("https://www.parasoft.com/solutions/");
+        await expect(page.url()).toBe("https://www.parasoft.com/solutions/");
 
     })
 
     test("should navigate 'Forum' to 'https://forums.parasoft.com/'", async ({ page }) => {
 
         const link = page.locator("div#footerPanel > ul > li").nth(5).locator("a");
-        expect(link).toContainText("Forum");
-        expect(link).toBeVisible();
+        await expect(link).toContainText("Forum");
+        await expect(link).toBeVisible();
         const targetUrl = await link.getAttribute("href");
         if (targetUrl === null) {
             throw new Error("Failed to retrieve target URL.");
         }
         await page.goto(targetUrl);
-        expect(page.url()).toBe("https://forums.parasoft.com/");
+        await expect(page.url()).toBe("https://forums.parasoft.com/");
     })
 
     test("should navigate 'Contact Us' to '/contact.htm'", async ({ page }) => {
 
         const baseURL = 'https://parabank.parasoft.com/parabank';
         const link = page.locator("div#footerPanel > ul > li").nth(7).locator("a");
-        expect(link).toContainText("Contact Us");
-        expect(link).toBeVisible();
+        await expect(link).toContainText("Contact Us");
+        await expect(link).toBeVisible();
         await link.click();
-        expect(page.url()).toBe(`${baseURL}/contact.htm`);
+        await expect(page.url()).toBe(`${baseURL}/contact.htm`);
 
     })
 
@@ -94,6 +94,6 @@ test.describe("User Is Logged In - Footer Section", () => {
             throw new Error("Failed to retrieve target URL.");
         }
         await page.goto(targetUrl);
-        expect(page.url()).toBe("https://www.parasoft.com/");
+        await expect(page.url()).toBe("https://www.parasoft.com/");
     })
 });

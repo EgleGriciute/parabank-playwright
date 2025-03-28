@@ -9,8 +9,12 @@ test.describe("Admin Page", () => {
     test("should return 'Settings saved successfully.' after 'SUBMIT' button click", async ({ page }) => {
         await page.locator("input[value='Submit']").click();
         const successMessage = page.locator("#rightPanel > p");
-        expect(successMessage).toBeVisible();
-        expect(successMessage).toContainText("Settings saved successfully");
+
+        await successMessage.waitFor({ state: 'visible', timeout: 10000 });
+
+        await expect(successMessage).toBeVisible({ timeout: 10000 });
+
+        await expect(successMessage).toContainText("Settings saved successfully");
     });
 
     test("should return a message 'Database Initialized' and change URL link to: ${baseUrl}/db.htm after 'INITIALIZE' button click", async ({ page }) => {
@@ -20,7 +24,7 @@ test.describe("Admin Page", () => {
 
     test("should return a message 'Database cleaned' and change URL link to: ${baseUrl}/db.htm after 'CLEAN' button click", async ({ page }) => {
         await page.locator("button[value='CLEAN']").click();
-        expect(page.url()).toContain("db.htm");
+        await expect(page.url()).toContain("db.htm");
     });
 
     // Database/ JMS Service:
@@ -34,26 +38,33 @@ test.describe("Admin Page", () => {
 
             if (statusText && statusText.includes("Running")) {
                 await page.locator("input[value='Shutdown']").click();
-                expect(statusRow).toContainText("Stopped");
+                await expect(statusRow).toContainText("Stopped");
             }
         });
 
         test("should indicate JMS Service Status as set to default: 'Stopped'", async ({ page }) => {
             const statusRow = page.locator("table.form2 > tbody > tr").nth(1);
-            expect(statusRow).toContainText("Stopped");
-            expect(statusRow).toHaveCount(1);
-            expect(statusRow).toBeVisible();
+            await expect(statusRow).toContainText("Stopped");
+            await expect(statusRow).toHaveCount(1);
+            await expect(statusRow).toBeVisible();
         });
 
         test("should switch status to: 'Running', and URL will contain 'shutdown.success' after a 'STARTUP' button click", async ({ page }) => {
-
+            // Click the 'Startup' button
             await page.locator("input[value='Startup']").click();
-            const statusRow = page.locator("table.form2 > tbody > tr").nth(1);
-            expect(statusRow).toContainText("Running");
-            expect(statusRow).toHaveCount(1);
-            expect(statusRow).toBeVisible();
 
-            expect(page.url()).toContain("startup.success");
+            // Wait for the second row to be visible
+            const statusRow = page.locator("table.form2 > tbody > tr").nth(1);
+
+            // Ensure the row is visible
+            await statusRow.waitFor({ state: 'visible', timeout: 10000 });
+
+            // Verify that the correct text is contained in the second row
+            await expect(statusRow).toContainText("Running");
+            await expect(statusRow).toBeVisible();
+
+            // Verify the URL contains the expected success string
+            await expect(page.url()).toContain("startup.success");
         });
 
         test("should switch status to: 'Stopped' after a 'SHUTDOWN' button click", async ({ page }) => {
@@ -63,13 +74,13 @@ test.describe("Admin Page", () => {
 
             if (statusText && !statusText.includes("Running")) {
                 await page.locator("input[value='Startup']").click();
-                expect(statusRow).toContainText("Running");
+                await expect(statusRow).toContainText("Running");
             }
 
             await page.locator("input[value='Shutdown']").click();
-            expect(statusRow).toContainText("Stopped");
+            await expect(statusRow).toContainText("Stopped");
 
-            expect(page.url()).toContain("shutdown.success");
+            await expect(page.url()).toContain("shutdown.success");
 
         });
     });
@@ -79,7 +90,7 @@ test.describe("Admin Page", () => {
     test.describe("Data Access Mode Tests", () => {
 
         test("should check input type radio to be checked/set by default as 'JDBC'", async ({ page }) => {
-            expect(page.locator("input#accessMode4[value='jdbc']")).toHaveAttribute("checked");
+            await expect(page.locator("input#accessMode4[value='jdbc']")).toHaveAttribute("checked");
         })
 
 
@@ -96,7 +107,7 @@ test.describe("Admin Page", () => {
             for (const radioButton of radioButtons) {
 
                 await page.locator(`${radioButton.selector}[value='${radioButton.value}']`).click();
-                expect(page.locator(`${radioButton.selector}[value='${radioButton.value}']`)).toBeChecked();
+                await expect(page.locator(`${radioButton.selector}[value='${radioButton.value}']`)).toBeChecked();
             }
 
 
@@ -116,9 +127,9 @@ test.describe("Admin Page", () => {
             const expectedUrlPart = `${baseUrl}/services/ParaBank`;
             const successMessage = await page.url();
 
-            expect(successMessage).toContain(expectedUrlPart);
-            expect(successMessage).toContain('jsessionid=');
-            expect(successMessage).toContain('wsdl');
+            await expect(successMessage).toContain(expectedUrlPart);
+            await expect(successMessage).toContain('jsessionid=');
+            await expect(successMessage).toContain('wsdl');
 
         });
 
@@ -130,7 +141,7 @@ test.describe("Admin Page", () => {
             const expectedUrlPart = `${baseUrl}/services/bank`;
             const currentUrl = await page.url();
 
-            expect(currentUrl).toContain(expectedUrlPart);
+            await expect(currentUrl).toContain(expectedUrlPart);
 
         });
 
@@ -142,8 +153,8 @@ test.describe("Admin Page", () => {
             const expectedUrlPart = `${baseUrl}/api-docs/index.html`;
             const currentUrl = await page.url();
 
-            expect(currentUrl).toContain(expectedUrlPart);
-            expect(currentUrl).toContain('jsessionid=');
+            await expect(currentUrl).toContain(expectedUrlPart);
+            await expect(currentUrl).toContain('jsessionid=');
 
         })
 
@@ -153,9 +164,9 @@ test.describe("Admin Page", () => {
 
             const currentUrl = await page.url();
 
-            expect(currentUrl).toContain(`${baseUrl}/services/LoanProcessor`);
-            expect(currentUrl).toContain('wsdl');
-            expect(currentUrl).toContain('jsessionid=');
+            await expect(currentUrl).toContain(`${baseUrl}/services/LoanProcessor`);
+            await expect(currentUrl).toContain('wsdl');
+            await expect(currentUrl).toContain('jsessionid=');
         });
 
     });
@@ -184,9 +195,9 @@ test.describe("Admin Page", () => {
 
                 const errorMessage = await page.locator(`span#${settingError.selector}\\.errors`);
 
-                expect(errorMessage).toHaveCount(1);
-                expect(errorMessage).toBeVisible;
-                expect(errorMessage).toContainText(settingError.error);
+                await expect(errorMessage).toHaveCount(1);
+                await expect(errorMessage).toBeVisible;
+                await expect(errorMessage).toContainText(settingError.error);
 
             }
 
@@ -222,9 +233,9 @@ test.describe("Admin Page", () => {
 
                     const errorMessage = await page.locator(`span#${settingError.selector}\\.errors`);
 
-                    expect(errorMessage).toHaveCount(1);
-                    expect(errorMessage).toBeVisible;
-                    expect(errorMessage).toContainText(settingError.error)
+                    await expect(errorMessage).toHaveCount(1);
+                    await expect(errorMessage).toBeVisible;
+                    await expect(errorMessage).toContainText(settingError.error)
                 }
             }
         });
@@ -233,8 +244,8 @@ test.describe("Admin Page", () => {
 
             const optionElement = page.locator("select#loanProvider > option[value='ws']");
 
-            expect(optionElement).toHaveText("Web Service");
-            expect(optionElement).toHaveAttribute("selected");
+            await expect(optionElement).toHaveText("Web Service");
+            await expect(optionElement).toHaveAttribute("selected");
 
         });
 
@@ -243,7 +254,7 @@ test.describe("Admin Page", () => {
             const loanProvider = page.locator("#loanProvider");
 
             const childrenCount = await loanProvider.locator("option").count();
-            expect(childrenCount).toBeGreaterThan(0);
+            await expect(childrenCount).toBeGreaterThan(0);
 
             const optionValues = [
 
@@ -256,7 +267,7 @@ test.describe("Admin Page", () => {
             for (const optionValue of optionValues) {
 
                 const option = page.locator(`#loanProvider option[value="${optionValue.option}"]`);
-                expect(option).toContainText(`${optionValue.text}`);
+                await expect(option).toContainText(`${optionValue.text}`);
 
             }
 
@@ -264,7 +275,7 @@ test.describe("Admin Page", () => {
 
         test("should be set to 'Available Funds' by default of 'Loan Processor'", async ({ page }) => {
 
-            expect(page.locator("#loanProcessor option[value='funds']")).toHaveAttribute("selected");
+            await expect(page.locator("#loanProcessor option[value='funds']")).toHaveAttribute("selected");
 
         });
 
@@ -273,7 +284,7 @@ test.describe("Admin Page", () => {
             const loanProcessorChildren = page.locator("#loanProcessor");
             const childrenCount = await loanProcessorChildren.locator("option").count();
 
-            expect(childrenCount).toBeGreaterThan(0);
+            await expect(childrenCount).toBeGreaterThan(0);
 
             const optionValues = [
 
@@ -283,36 +294,51 @@ test.describe("Admin Page", () => {
             ];
 
             for (const loanProcessorOption of optionValues) {
-                expect(page.locator(`#loanProcessor option[value="${loanProcessorOption.option}"]`)).toContainText(`${loanProcessorOption.text}`)
+                await expect(page.locator(`#loanProcessor option[value="${loanProcessorOption.option}"]`)).toContainText(`${loanProcessorOption.text}`)
             }
 
         });
 
         test("should not exceed 10 digit value of: 2 147 483 647 % threshold input", async ({ page }) => {
-
             const loanProcessorThreshold = page.locator("input#loanProcessorThreshold");
 
+            // Clear and fill the input field
             await loanProcessorThreshold.clear();
             await loanProcessorThreshold.fill("2147483647");
 
-            page.locator("input[value='Submit']").click();
+            // Submit the form
+            await page.locator("input[value='Submit']").click();
 
-            expect(page.locator("#rightPanel p > b")).toContainText("Settings saved successfully.");
-
+            // Wait for the message to appear and check if it contains the expected text
+            const messageLocator = page.locator("#rightPanel p > b");
+            await messageLocator.waitFor({ state: 'visible', timeout: 10000 });
+            await expect(messageLocator).toContainText("Settings saved successfully.");
         });
 
+
         test("should return 'Please enter a valid number.' after increasing 2147483647 % threshold value", async ({ page }) => {
+            // Wait for the page to load completely
+            await page.waitForLoadState('domcontentloaded');
 
+            // Wait for the input field to be visible
             const loanProcessorThreshold = page.locator("input#loanProcessorThreshold");
+            await loanProcessorThreshold.waitFor({ state: 'visible', timeout: 10000 });
 
+            // Clear and fill the input field
             await loanProcessorThreshold.clear();
             await loanProcessorThreshold.fill("2147483647.1");
 
-            page.locator("input[value='Submit']").click();
+            // Submit the form
+            await page.locator("input[value='Submit']").click();
 
-            expect(page.locator("span#loanProcessorThreshold\\.errors")).toContainText("Please enter a valid number.");
+            // Wait for the error message to appear
+            const errorLocator = page.locator("span#loanProcessorThreshold\\.errors");
+            await errorLocator.waitFor({ state: 'visible', timeout: 10000 });
 
+            // Verify the error message text
+            await expect(errorLocator).toContainText("Please enter a valid number.");
         });
+
 
     });
 });
